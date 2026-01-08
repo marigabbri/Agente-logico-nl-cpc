@@ -199,9 +199,3 @@ Criar uma visualização gráfica da árvore lógica.
 
 Adicionar testes automáticos de consistência.
 
-🎥 4. Vídeo demonstrando o funcionamento
-
-📌 Insira aqui o link do seu vídeo (YouTube, Drive, etc.)
-Exemplo:
-
-https://youtu.be/seu-video-demo
