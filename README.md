@@ -10,7 +10,7 @@ Sistema para tradução bidirecional entre **Linguagem Natural (NL)** e **Cálcu
 https://marigabbri.github.io/Agente-logico-nl-cpc/
 
 ⚙ **API hospedada no Render:**   
-[https://marigabbri.github.io/Agente-logico-nl-cpc/](https://trabalho-m-rcio-ia-oauo.onrender.com)
+https://trabalho-m-rcio-ia-oauo.onrender.com
 
 ---
 
