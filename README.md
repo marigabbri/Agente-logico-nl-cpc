@@ -1,18 +1,30 @@
-📘 README – Agente Lógico NL ↔ CPC
-🔗 Links do Projeto
+# 📘 Agente Lógico NL ↔ CPC
 
-🌐 Interface Web (GitHub Pages):
+Sistema para tradução bidirecional entre **Linguagem Natural (NL)** e **Cálculo Proposicional Clássico (CPC)** utilizando regras formais de lógica.
+
+---
+
+## 🔗 Links do Projeto
+
+🌐 **Interface Web (GitHub Pages):**  
 https://marigabbri.github.io/Agente-logico-nl-cpc/
 
-⚙ API hospedada no Render:
-(adicione aqui o seu link, ex.:)
-https://sua-api-no-render.onrender.com
+⚙ **API hospedada no Render:**  
+*(adicione aqui o link correto da sua API, se necessário)*  
+[https://marigabbri.github.io/Agente-logico-nl-cpc/](https://trabalho-m-rcio-ia-oauo.onrender.com)
 
-🧩 1. Arquitetura do Sistema e Funcionamento
+---
 
-O projeto foi desenvolvido com uma arquitetura simples e modular dividida em Interface Web + API Backend.
+## 🧩 1. Arquitetura do Sistema e Funcionamento
 
-📌 Arquitetura Geral
+O projeto foi desenvolvido com uma arquitetura simples e modular dividida em:
+
+- Interface Web (Frontend)
+- API Backend (Flask)
+
+### 📌 Arquitetura Geral
+
+```
 [ Usuário ]
      |
      v
@@ -23,42 +35,56 @@ O projeto foi desenvolvido com uma arquitetura simples e modular dividida em Int
      |
      v
 [ Módulos de análise e tradução NL <-> CPC ]
+```
 
-✔ Frontend (GitHub Pages)
+---
 
-Desenvolvido em HTML, CSS e JavaScript.
+### ✔ Frontend (GitHub Pages)
 
-Envia requisições AJAX usando fetch().
+- Desenvolvido em **HTML, CSS e JavaScript**
+- Envia requisições AJAX utilizando `fetch()`
+- Possui duas funcionalidades:
+  - NL → CPC
+  - CPC → NL
 
-Possui duas funcionalidades:
+---
 
-NL → CPC
+### ✔ Backend (API Flask no Render)
 
-CPC → NL
+A API possui dois endpoints principais:
 
-✔ Backend (API Flask no Render)
+---
 
-A API possui dois endpoints:
+#### 🔹 1. `/api/nl-to-cpc`
 
-1. /api/nl-to-cpc
+##### 📥 Entrada
 
-Entrada:
+```json
+{ 
+  "frase": "Se chover, então a grama ficará molhada." 
+}
+```
 
-{ "frase": "Se chover, então a grama ficará molhada." }
+##### 📤 Saída
 
-
-Saída:
-
+```json
 {
   "ok": true,
   "formula_cpc": "(P → Q)",
-  "mapeamento": { "P": "chover", "Q": "a grama ficará molhada" }
+  "mapeamento": { 
+    "P": "chover", 
+    "Q": "a grama ficará molhada" 
+  }
 }
+```
 
-2. /api/cpc-to-nl
+---
 
-Entrada:
+#### 🔹 2. `/api/cpc-to-nl`
 
+##### 📥 Entrada
+
+```json
 {
   "formula": "p^¬q",
   "mapeamento": {
@@ -66,136 +92,158 @@ Entrada:
     "q": "Kiki come de tudo"
   }
 }
+```
 
+##### 📤 Saída
 
-Saída:
-
+```json
 {
   "ok": true,
   "frase_nl": "Kiki é uma gata e não Kiki come de tudo"
 }
+```
 
-🧠 2. Estratégia de Tradução (Regras, Mapeamento, LLMs) + Exemplos e Análise
+---
 
-A solução não usa LLMs, conforme solicitado para um trabalho tradicional de lógica — a tradução é feita por regras formais.
+## 🧠 2. Estratégia de Tradução
 
-✔ A) Tradução NL → CPC
-Etapas
+A solução **não utiliza LLMs**, conforme exigido para um trabalho tradicional de lógica formal.  
+A tradução é feita por meio de **regras determinísticas**.
 
-Normalização
+---
 
-Texto é transformado para minúsculas
+### ✔ A) Tradução NL → CPC
 
-Espaços extras removidos
+#### 🔎 Etapas
 
-Pontuação final removida
+##### 1️⃣ Normalização
 
-Detecção do conectivo principal
+- Conversão para minúsculas
+- Remoção de espaços extras
+- Remoção de pontuação final
 
-“se … então …” → →
+##### 2️⃣ Detecção do conectivo principal
 
-“se e somente se” → ↔
+| Linguagem Natural | Operador Lógico |
+|-------------------|-----------------|
+| se ... então ...  | → |
+| se e somente se   | ↔ |
+| mas               | ∧ |
+| e                 | ∧ |
+| ou                | ∨ |
 
-“mas” → ∧ (tratado como “e” lógico)
+##### 3️⃣ Identificação de negação
 
-“e” → ∧
+Reconhece padrões como:
 
-“ou” → ∨
+- “não X”
+- “X não Y”
 
-Negação é identificada como:
+A negação não gera nova letra proposicional — aplica-se `¬` à variável correspondente.
 
-“não X”
+##### 4️⃣ Identificação das proposições atômicas
 
-“X não Y”
+Exemplo:
 
-Identificação das proposições atômicas
+> “Kiki come de tudo, mas Kiki não é uma gata”
 
-Exemplos:
-“Kiki come de tudo, mas Kiki não é uma gata”
-→ atomicas:
+Atômicas identificadas:
 
-“kiki come de tudo”
+- "kiki come de tudo"
+- "kiki é uma gata"
 
-“kiki é uma gata”
+##### 5️⃣ Mapeamento para letras
 
-Mapeamento para letras
+As proposições são mapeadas sequencialmente:
 
-P, Q, R, S…
+```
+P, Q, R, S...
+```
 
-Negativa não vira nova letra, usa mesma letra + ¬
+##### 6️⃣ Construção final da fórmula
 
-Construção final da fórmula
+**Entrada:**
 
-✔ Exemplo e Análise
-Entrada:
+```
 Kiki come de tudo, mas Kiki não é uma gata
+```
 
-Saída:
+**Saída:**
+
+```
 Fórmula: (P ∧ ¬Q)
+
 Mapeamento:
 P = "kiki come de tudo"
 Q = "kiki é uma gata"
+```
 
-✔ Análise
+---
 
-O sistema identificou corretamente o conectivo “mas” → ∧
+### ✔ Análise
 
-Detectou a atômica positiva “kiki é uma gata” e aplicou negação
+- O conectivo “mas” foi corretamente interpretado como ∧
+- A proposição positiva foi identificada
+- A negação foi aplicada corretamente
+- Tradução realizada com sucesso
 
-Funcionamento perfeito
+---
 
-❌ Exemplo com leve erro:
+### ❌ Exemplo com pequeno erro
 
-Entrada:
+**Entrada:**
 
+```
 Se chover então grama molha
+```
 
+**Saída:**
 
-Sem vírgula.
-
-Saída:
-
+```
 erro: frase atômica 'grama molha' não mapeada...
+```
 
+📌 **Motivo**
 
-📌 Por quê?
-A frase não segue o padrão “Se X, então Y” com vírgula.
-O parser espera “se X então Y”.
+O parser espera o padrão:
 
-✔ Correção:
+```
+Se X, então Y.
+```
 
+✔ **Correção**
+
+```
 Se chover, então a grama molha.
+```
 
-⚠ 3. Limitações e Possibilidades de Melhoria
-❗ Limitações atuais:
+---
 
-Parser depende de formatações específicas.
+## ⚠ 3. Limitações e Possibilidades de Melhoria
 
-Algumas frases ambíguas não são tratadas.
+### ❗ Limitações Atuais
 
-Não há suporte para:
+- Parser depende de formatação específica
+- Frases ambíguas podem não ser corretamente interpretadas
+- Não há suporte para:
+  - Negações complexas (“é falso que…”)
+  - Conectivos múltiplos aninhados
+  - Proposições compostas dentro de uma mesma atômica
 
-Negações complexas (“é falso que…”)
+### 🚀 Melhorias Futuras
 
-Conectivos múltiplos aninhados
+- Integração com análise sintática usando SpaCy
+- Reconhecimento mais robusto de conectivos
+- Suporte a estruturas mais complexas:
+  - “ou… ou…”
+  - “apesar de que…”
+  - “não apenas… mas também…”
+- Visualização gráfica da árvore lógica
+- Testes automáticos de consistência
 
-Proposições compostas dentro de uma mesma atômica
+---
 
-🚀 Melhorias futuras:
+## 📌 Status do Projeto
 
-Adicionar análise sintática com SpaCy.
-
-Criar reconhecimento mais robusto de conectivos.
-
-Suporte a frases mais complexas:
-
-“ou… ou…”
-
-“apesar de que…”
-
-“não apenas… mas também…”
-
-Criar uma visualização gráfica da árvore lógica.
-
-Adicionar testes automáticos de consistência.
-
+✅ Projeto acadêmico funcional  
+📚 Desenvolvido para disciplina de Lógica
