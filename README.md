@@ -12,6 +12,9 @@ https://marigabbri.github.io/Agente-logico-nl-cpc/
 ⚙ **API hospedada no Render:**   
 https://trabalho-m-rcio-ia-oauo.onrender.com
 
+🖥️ **BACK-END:**  
+https://github.com/Felps-Santos/Agente-I.A-Web
+
 ---
 
 ## 🧩 1. Arquitetura do Sistema e Funcionamento
